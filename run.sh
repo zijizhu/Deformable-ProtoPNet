@@ -1,4 +1,4 @@
-python3 main.py -gpuid='0, 1' \
+python3 main.py -gpuid='0' \
                     -m=0.1 \
                     -last_layer_fixed=True \
                     -subtractive_margin=True \
