@@ -233,8 +233,11 @@ def warm_pre_offset(model, log=print, last_layer_fixed=True):
     log('\twarm pre offset')
 
 def joint(model, log=print, last_layer_fixed=True):
-    for p in model.module.features.parameters():
-        p.requires_grad = True
+    if str(model.module.features).upper().startswith("DINOV2"):
+        model.module.features.set_requires_grad()
+    else:
+        for p in model.module.features.parameters():
+            p.requires_grad = True
     for p in model.module.add_on_layers.parameters():
         p.requires_grad = True
     model.module.prototype_vectors.requires_grad = True

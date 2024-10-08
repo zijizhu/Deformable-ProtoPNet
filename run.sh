@@ -7,4 +7,5 @@ python3 main.py -gpuid='0' \
                     -num_prototypes=1200 \
                     -incorrect_class_connection=-0.5 \
                     -deformable_conv_hidden_channels=128 \
-                    -rand_seed=1
+                    -rand_seed=1 \
+                    -base_architecture="densenet121"
