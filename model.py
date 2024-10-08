@@ -1,6 +1,6 @@
 import sys
 import torch
-from functions import partial
+from functools import partial
 from vit_features import DINOv2BackboneExpanded
 import torch.nn as nn
 import torch.nn.functional as F
