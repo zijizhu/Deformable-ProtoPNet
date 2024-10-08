@@ -30,7 +30,7 @@ parser.add_argument('-num_prototypes', nargs=1, type=int, default=None)
 parser.add_argument('-dilation', nargs=1, type=float, default=2)
 parser.add_argument('-incorrect_class_connection', nargs=1, type=float, default=0)
 parser.add_argument('-rand_seed', nargs=1, type=int, default=None)
-parser.add_argument('-base_architecture', nargs=1, type=str, default="resnet50")
+parser.add_argument('-base_architecture', type=str, default="resnet50")
 
 args = parser.parse_args()
 
@@ -105,7 +105,7 @@ model_dir = './saved_models/' + f'{base_architecture}-{num_prototypes}' + '/'
 makedir(model_dir)
 shutil.copy(src=os.path.join(os.getcwd(), __file__), dst=model_dir)
 shutil.copy(src=os.path.join(os.getcwd(), 'settings.py'), dst=model_dir)
-shutil.copy(src=os.path.join(os.getcwd(), base_architecture_type + '_features.py'), dst=model_dir)
+# shutil.copy(src=os.path.join(os.getcwd(), base_architecture_type + '_features.py'), dst=model_dir)
 shutil.copy(src=os.path.join(os.getcwd(), 'model.py'), dst=model_dir)
 shutil.copy(src=os.path.join(os.getcwd(), 'train_and_test.py'), dst=model_dir)
 
@@ -240,7 +240,7 @@ last_layer_optimizer = torch.optim.Adam(last_layer_optimizer_specs)
 # weighting of different training losses
 from settings import coefs
 # number of training epochs, number of warm epochs, push start epoch, push epochs
-from settings import num_train_epochs, push_epochs, \
+from settings import num_warm_epochs, num_train_epochs, push_epochs, \
                     num_secondary_warm_epochs, push_start
 
 # train the model
