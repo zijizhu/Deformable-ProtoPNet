@@ -31,6 +31,8 @@ parser.add_argument('-dilation', nargs=1, type=float, default=2)
 parser.add_argument('-incorrect_class_connection', nargs=1, type=float, default=0)
 parser.add_argument('-rand_seed', nargs=1, type=int, default=None)
 parser.add_argument('-base_architecture', type=str, default="resnet50")
+parser.add_argument('-offline_augmentation', action='store_true')
+parser.add_argument('-data_path', type=str, default='./datasets')
 
 args = parser.parse_args()
 
@@ -128,46 +130,71 @@ else:
     num_classes = 200
 log("{} classes".format(num_classes))
 
-if 'augmented' not in train_dir:
+if args.offline_augmentation:
     print("Using online augmentation")
     train_dataset = datasets.ImageFolder(
-        train_dir,
+        os.path.join(args.data_path, 'cub200_cropped', 'train_cropped_augmented'),
         transforms.Compose([
-            transforms.RandomAffine(degrees=(-25, 25), shear=15),
-            transforms.RandomHorizontalFlip(),
             transforms.Resize(size=(img_size, img_size)),
             transforms.ToTensor(),
             normalize,
+        ]))
+    test_dataset = datasets.ImageFolder(
+        os.path.join(args.data_path, 'cub200_cropped', 'test_cropped'),
+        transforms.Compose([
+            transforms.Resize(size=(img_size, img_size)),
+            transforms.ToTensor(),
+            normalize,
+        ]))
+    train_push_dataset = datasets.ImageFolder(
+        os.path.join(args.data_path, 'cub200_cropped', 'train_cropped'),
+        transforms.Compose([
+            transforms.Resize(size=(img_size, img_size)),
+            transforms.ToTensor(),
         ]))
 else:
-    train_dataset = datasets.ImageFolder(
-        train_dir,
+    if 'augmented' not in train_dir:
+        print("Using online augmentation")
+        train_dataset = datasets.ImageFolder(
+            train_dir,
+            transforms.Compose([
+                transforms.RandomAffine(degrees=(-25, 25), shear=15),
+                transforms.RandomHorizontalFlip(),
+                transforms.Resize(size=(img_size, img_size)),
+                transforms.ToTensor(),
+                normalize,
+            ]))
+    else:
+        train_dataset = datasets.ImageFolder(
+            train_dir,
+            transforms.Compose([
+                transforms.Resize(size=(img_size, img_size)),
+                transforms.ToTensor(),
+                normalize,
+            ]))
+    train_push_dataset = datasets.ImageFolder(
+        train_push_dir,
+        transforms.Compose([
+            transforms.Resize(size=(img_size, img_size)),
+            transforms.ToTensor(),
+        ]))
+    
+    test_dataset = datasets.ImageFolder(
+        test_dir,
         transforms.Compose([
             transforms.Resize(size=(img_size, img_size)),
             transforms.ToTensor(),
             normalize,
         ]))
+    
 train_loader = torch.utils.data.DataLoader(
     train_dataset, batch_size=train_batch_size, shuffle=True,
     num_workers=4, pin_memory=False)
-# push set
-train_push_dataset = datasets.ImageFolder(
-    train_push_dir,
-    transforms.Compose([
-        transforms.Resize(size=(img_size, img_size)),
-        transforms.ToTensor(),
-    ]))
+
 train_push_loader = torch.utils.data.DataLoader(
     train_push_dataset, batch_size=train_push_batch_size, shuffle=False,
     num_workers=4, pin_memory=False)
-# test set
-test_dataset = datasets.ImageFolder(
-    test_dir,
-    transforms.Compose([
-        transforms.Resize(size=(img_size, img_size)),
-        transforms.ToTensor(),
-        normalize,
-    ]))
+
 test_loader = torch.utils.data.DataLoader(
     test_dataset, batch_size=test_batch_size, shuffle=False,
     num_workers=4, pin_memory=False)
