@@ -89,8 +89,8 @@ elif 'densenet161' in base_architecture:
 elif base_architecture == 'dinov2_vitb_exp':
     prototype_shape = (num_prototypes, 768, 2, 2)
     add_on_layers_type = 'regular'
-elif base_architecture == 'dinov2_vits_exp':
-    prototype_shape = (num_prototypes, 384, 2, 2)
+elif base_architecture.startswith('dino_vitb'):
+    prototype_shape = (num_prototypes, 768, 2, 2)
     add_on_layers_type = 'regular'
 else:
     raise NotImplementedError
