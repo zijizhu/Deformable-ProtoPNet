@@ -220,7 +220,8 @@ def warm_only(model, log=print, last_layer_fixed=True):
     log('\twarm')
 
 def warm_pre_offset(model, log=print, last_layer_fixed=True):
-    if str(model.module.features).upper().startswith("DINOV2"):
+    if 'dino' in str(model.module.features).lower():
+        log('\warm pre offset finetune dino backbone')
         model.module.features.set_requires_grad()
     else:
         for p in model.module.features.parameters():
@@ -236,7 +237,8 @@ def warm_pre_offset(model, log=print, last_layer_fixed=True):
     log('\twarm pre offset')
 
 def joint(model, log=print, last_layer_fixed=True):
-    if str(model.module.features).upper().startswith("DINOV2"):
+    if 'dino' in str(model.module.features).lower():
+        log('\tjoint finetune dino backbone')
         model.module.features.set_requires_grad()
     else:
         for p in model.module.features.parameters():

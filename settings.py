@@ -55,7 +55,7 @@ coefs = {
 
 subtractive_margin = True
 
-num_train_epochs = 31
+num_train_epochs = 21
 num_warm_epochs = 5
 num_secondary_warm_epochs = 5
 push_start = 20
