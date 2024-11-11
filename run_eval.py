@@ -2,9 +2,14 @@ import os
 from pathlib import Path
 import model
 import torch
+import logging
+import sys
 import argparse
 from eval.stability import evaluate_stability
 from eval.consistency import evaluate_consistency
+from eval.distinctiveness import evaluate_distinctiveness
+from eval.comprehensiveness import evaluate_comprehensiveness
+
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -66,3 +71,22 @@ if __name__ == "__main__":
     print('Stability Score : {:.2f}%'.format(stability_score))
     with open(output_path / filename, 'a') as fp:
         fp.write('Stability Score : {:.2f}%\n'.format(stability_score))
+
+    log_dir = Path(args.resume).parent
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="[%(asctime)s][%(name)s][%(levelname)s] - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+        handlers=[
+            logging.FileHandler((log_dir / f"evaluate_distinctiveness-{Path(args.resume).stem}.log").as_posix()),
+            logging.StreamHandler(sys.stdout),
+        ],
+        force=True,
+    )
+
+    ppnet.to(device)
+    ppnet.eval()
+
+    evaluate_distinctiveness(ppnet, save_path=log_dir, run_name=Path(args.resume).stem, device=device)
+    evaluate_comprehensiveness(ppnet, save_path=log_dir, run_name=Path(args.resume).stem, device=device)
