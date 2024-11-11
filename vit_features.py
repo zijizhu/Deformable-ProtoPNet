@@ -7,7 +7,7 @@ import numpy as np
 import torch
 from dinov2.layers.block import Block, MemEffAttention
 from dinov2.models.vision_transformer import DinoVisionTransformer as Dinov2VisionTransformer
-from .dino_backbone.vision_transformer import VisionTransformer
+from dino_backbone.vision_transformer import VisionTransformer
 from einops import rearrange
 from torch import nn
 
