@@ -55,9 +55,9 @@ coefs = {
 
 subtractive_margin = True
 
-num_train_epochs = 21
-num_warm_epochs = 5
-num_secondary_warm_epochs = 5
-push_start = 20
+num_train_epochs = 11
+num_warm_epochs = 3
+num_secondary_warm_epochs = 3
+push_start = 10
 
 push_epochs = [i for i in range(num_train_epochs) if i % 10 == 0]
